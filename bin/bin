@@ -8,6 +8,7 @@ require __DIR__ . '/../vendor/autoload.php';
 $console = new Application('command application');
 
 $console->addCommands([
+    new App\Cli\ParseCommand,
 ]);
 
 $console->run();
