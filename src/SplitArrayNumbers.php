@@ -6,31 +6,40 @@ class SplitArrayNumbers
 {
     public function split(int $number, array $intNumbers)
     {
-        $numberCount = [];
-        
-        $currentCount = 0;
+        $correctNumberCount = 0;
         
         foreach ($intNumbers as $key => $currentNumber) {
             if ($number == $currentNumber) {
-                $currentCount++;
+                $correctNumberCount++;
             }
-            
-            $numberCount[$key] = $currentCount;
+        }
+        
+        if (!$correctNumberCount) {
+            return -1;
         }
         
         $splitPosition = -1;
         
-        $nonNumberCount = 0;
+        $notCorrectnumber = 0;
         
-        for ($key = count($intNumbers); $key-- > 1; ) {
-            if ($number != $intNumbers[$key]) {
-                $nonNumberCount++;
+        for ($key = count($intNumbers) - 1; $key > 1; $key--) {
+            if ($number == $intNumbers[$key]) {
+                $correctNumberCount--;
+            }
+            else {
+                $notCorrectnumber++;
             }
             
-            if ($nonNumberCount == $numberCount[$key - 1]) {
+            if (!$correctNumberCount) {
+                $splitPosition = -1;
+                break;
+            }
+
+            if ($correctNumberCount == $notCorrectnumber) {
                 $splitPosition = $key;
                 break;
             }
+            
         }
 
         return $splitPosition;
