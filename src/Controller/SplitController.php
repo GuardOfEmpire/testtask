@@ -13,6 +13,16 @@ class SplitController extends \Symfony\Bundle\FrameworkBundle\Controller\Abstrac
         
         $requestObject = json_decode($request->getContent());
         
+        $userId = $this->auth('1', '2');
+        
+        if (!$userId) {
+            throw new \Exception('Неверный логин или пароль');
+        }
+        
+        if (!$requestObject) {
+            throw new \Exception('Невалидный запрос');
+        }
+        
         $validator = $this->makeValidator($requestObject);
         
         if (!$validator->isValid()) {
@@ -21,6 +31,7 @@ class SplitController extends \Symfony\Bundle\FrameworkBundle\Controller\Abstrac
         else {
             $splitter = new \App\SplitArrayNumbers();
             $result = $splitter->split($requestObject->number, $requestObject->values);
+            $this->storeResult(1, $requestObject, $result);
         }
         
         $response->setContent($result);
@@ -39,14 +50,28 @@ class SplitController extends \Symfony\Bundle\FrameworkBundle\Controller\Abstrac
         
         return $validatorContainer;
     }
+    
+    private function auth($login, $password)
+    {
+        /** @var \App\Repository\UserRepository $userRepository */
+        $userRepository = $this
+            ->getDoctrine()
+            ->getRepository(\App\Entity\User::class);
+        
+        return $userRepository->auth($login, $password);
+    }
+    
+    private function storeResult(int $userId, \stdClass $requestData, int $response)
+    {
+        $entityManager = $this->getDoctrine()->getManager();
+
+        $executionStore = new \App\Entity\ExecutionHistory();
+        $executionStore->setUserId($userId);
+        $executionStore->setRequestData(json_encode($requestData));
+        $executionStore->setResponse($response);
+
+        $entityManager->persist($executionStore);
+
+        $entityManager->flush();
+    }
 }
-
-
-/**
-case error:
-
-"number": 3,
-"values": [5, 5, 1, 7, 2, 3]
-
-5
- */

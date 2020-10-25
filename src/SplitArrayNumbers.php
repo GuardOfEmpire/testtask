@@ -6,6 +6,8 @@ class SplitArrayNumbers
 {
     public function split(int $number, array $intNumbers)
     {
+        $numbersCount = count($intNumbers);
+        
         $correctNumberCount = 0;
         
         foreach ($intNumbers as $key => $currentNumber) {
@@ -22,7 +24,7 @@ class SplitArrayNumbers
         
         $notCorrectnumber = 0;
         
-        for ($key = count($intNumbers) - 1; $key > 1; $key--) {
+        for ($key = $numbersCount - 1; $key > 1; $key--) {
             if ($number == $intNumbers[$key]) {
                 $correctNumberCount--;
             }
