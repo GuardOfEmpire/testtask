@@ -11,11 +11,10 @@ class ArrayOfIntegerValidator extends BaseValidator
         }
         
         foreach ($this->value as $arrayValue) {
-            if (!is_int($arrayValue)) {
+            if (!is_numeric($arrayValue)) {
                 return false;
             }
         }
-        
         return true;
     }
 }

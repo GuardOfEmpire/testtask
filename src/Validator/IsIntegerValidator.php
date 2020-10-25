@@ -6,6 +6,6 @@ class IsIntegerValidator extends BaseValidator
 {
     public function isValid(): bool
     {
-        return is_int($this->value);
+        return is_numeric($this->value);
     }
 }

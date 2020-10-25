@@ -29,7 +29,7 @@ class ValidatorContainer implements ValidatorInterface
      * @param \App\Validator\ValidatorInterface $childValidators
      * @return self
      */
-    public function addChildValidators(ValidatorInterface $childValidators)
+    public function addChildValidator(ValidatorInterface $childValidators)
     {
         $this->childValidators[] = $childValidators;
 

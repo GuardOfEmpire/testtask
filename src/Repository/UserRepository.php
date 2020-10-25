@@ -15,9 +15,7 @@ class UserRepository extends \Doctrine\ORM\EntityRepository
         $stmt = $connection->prepare("SELECT `id` FROM {$this->tableName} WHERE login = :login and password = :password");
         
         $stmt->execute(['login'=> $login, 'password' => $password]);
-        
-        $value = $stmt->fetchOne();
-        
-        var_dump($value);
+
+        return $stmt->fetchOne();
     }
 }

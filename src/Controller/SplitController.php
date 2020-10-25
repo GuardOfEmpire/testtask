@@ -13,7 +13,7 @@ class SplitController extends \Symfony\Bundle\FrameworkBundle\Controller\Abstrac
         
         $requestObject = json_decode($request->getContent());
         
-        $userId = $this->auth('1', '2');
+        $userId = $this->auth($request->getUser(), $request->getPassword());
         
         if (!$userId) {
             throw new \Exception('Неверный логин или пароль');
@@ -26,7 +26,7 @@ class SplitController extends \Symfony\Bundle\FrameworkBundle\Controller\Abstrac
         $validator = $this->makeValidator($requestObject);
         
         if (!$validator->isValid()) {
-            $result = -1;
+            throw new \Exception('Невалидный запрос');
         }
         else {
             $splitter = new \App\SplitArrayNumbers();
@@ -43,10 +43,8 @@ class SplitController extends \Symfony\Bundle\FrameworkBundle\Controller\Abstrac
     private function makeValidator(\stdClass $data)
     {
         $validatorContainer = new \App\Validator\ValidatorContainer;
-        $validatorContainer->addChildValidators(
-            new \App\Validator\IsIntegerValidator($data->number ?? null),
-            new \App\Validator\ArrayOfIntegerValidator($data->values ?? null),
-        );
+        $validatorContainer->addChildValidator(new \App\Validator\IsIntegerValidator($data->number ?? null));
+        $validatorContainer->addChildValidator(new \App\Validator\ArrayOfIntegerValidator($data->values ?? null));
         
         return $validatorContainer;
     }
@@ -64,14 +62,8 @@ class SplitController extends \Symfony\Bundle\FrameworkBundle\Controller\Abstrac
     private function storeResult(int $userId, \stdClass $requestData, int $response)
     {
         $entityManager = $this->getDoctrine()->getManager();
-
-        $executionStore = new \App\Entity\ExecutionHistory();
-        $executionStore->setUserId($userId);
-        $executionStore->setRequestData(json_encode($requestData));
-        $executionStore->setResponse($response);
-
-        $entityManager->persist($executionStore);
-
-        $entityManager->flush();
+        $executionService = new \App\ExecutionHistoryService($entityManager);
+        
+        $executionService->save($userId, $requestData, $response);
     }
 }
