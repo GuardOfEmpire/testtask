@@ -77,8 +77,8 @@ class ParseCommand extends Command
     private function validate($number, $numberList): void
     {
         $validatorContainer = new \App\Validator\ValidatorContainer;
-        $validatorContainer->addChildValidator(new \App\Validator\IsIntegerValidator($number ?? null));
-        $validatorContainer->addChildValidator(new \App\Validator\ArrayOfIntegerValidator($numberList ?? null));
+        $validatorContainer->addChildValidator(new \App\Validator\IsNumericValidator($number ?? null));
+        $validatorContainer->addChildValidator(new \App\Validator\ArrayOfNumericValidator($numberList ?? null));
         
         if (!$validatorContainer->isValid()) {
             throw new InvalidArgumentException('Невалидные входные данные');

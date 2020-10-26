@@ -43,8 +43,8 @@ class SplitController extends \Symfony\Bundle\FrameworkBundle\Controller\Abstrac
     private function makeValidator(\stdClass $data)
     {
         $validatorContainer = new \App\Validator\ValidatorContainer;
-        $validatorContainer->addChildValidator(new \App\Validator\IsIntegerValidator($data->number ?? null));
-        $validatorContainer->addChildValidator(new \App\Validator\ArrayOfIntegerValidator($data->values ?? null));
+        $validatorContainer->addChildValidator(new \App\Validator\IsNumericValidator($data->number ?? null));
+        $validatorContainer->addChildValidator(new \App\Validator\ArrayOfNumericValidator($data->values ?? null));
         
         return $validatorContainer;
     }

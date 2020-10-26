@@ -11,7 +11,7 @@ class ValidatorContainer implements ValidatorInterface
      *
      * @var ValidatorInterface[]
      */
-    private array $childValidators;
+    private array $childValidators = [];
     
     /**
      * Возвращает установленные валидаторы

@@ -2,7 +2,7 @@
 
 namespace App\Validator;
 
-class ArrayOfIntegerValidator extends BaseValidator
+class ArrayOfNumericValidator extends BaseValidator
 {
     public function isValid(): bool
     {
