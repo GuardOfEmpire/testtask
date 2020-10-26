@@ -11,6 +11,10 @@ class UserRepository extends \Doctrine\ORM\EntityRepository
 
     public function auth($login, $password)
     {
+        /**
+         * По хорошему надо бы шифровать пароли.
+         * Но для тестового задания проще вносить в открытом виде (в том числе и для проверки)
+         */
         $connection = $this->getEntityManager()->getConnection();
         $stmt = $connection->prepare("SELECT `id` FROM {$this->tableName} WHERE login = :login and password = :password");
         

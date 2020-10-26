@@ -15,27 +15,37 @@ class SplitController extends \Symfony\Bundle\FrameworkBundle\Controller\Abstrac
         
         $userId = $this->auth($request->getUser(), $request->getPassword());
         
-        if (!$userId) {
-            throw new \Exception('Неверный логин или пароль');
+        try {
+            if (!$userId) {
+                throw new \Exception('Неверный логин или пароль');
+            }
+
+            if (!$requestObject) {
+                throw new \Exception('Невалидный запрос');
+            }
+
+            $validator = $this->makeValidator($requestObject);
+
+            if (!$validator->isValid()) {
+                throw new \Exception('Невалидный запрос');
+            }
+            else {
+                $splitter = new \App\SplitArrayNumbers();
+                $splitposition = $splitter->split($requestObject->number, $requestObject->values);
+                $this->storeResult(1, $requestObject, $splitposition);
+            }
+            
+            $result = new \stdClass();
+            $result->splitPostition = $splitposition;
         }
-        
-        if (!$requestObject) {
-            throw new \Exception('Невалидный запрос');
+        catch (\Exception $e) {
+            $result = new \stdClass;
+            $result->error = $e->getMessage();
+            $response->setStatusCode('400');
         }
-        
-        $validator = $this->makeValidator($requestObject);
-        
-        if (!$validator->isValid()) {
-            throw new \Exception('Невалидный запрос');
-        }
-        else {
-            $splitter = new \App\SplitArrayNumbers();
-            $result = $splitter->split($requestObject->number, $requestObject->values);
-            $this->storeResult(1, $requestObject, $result);
-        }
-        
-        $response->setContent($result);
-        $response->headers->set("Content-Type", 'text/plain');
+
+        $response->setContent(json_encode($result));
+        $response->headers->set("Content-Type", 'application/json');
         
         return $response;
     }
