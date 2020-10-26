@@ -69,8 +69,8 @@ class ParseCommand extends Command
             $this->executionHistoryService->save($userId, $stdObject, $splitPosition);
         }
         
-        $output->writeln("{$number} / {$numberString}: {$splitPosition}");
-//        $output->writeln($splitPosition);
+        $output->writeln($splitPosition);
+
         return 0;
     }
     
